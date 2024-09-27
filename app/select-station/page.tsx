@@ -1,12 +1,10 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import TrainDetails from '../../components/train-details'
 import { Card, CardContent } from '../../components/ui/card'
 import { Skeleton } from '../../components/ui/skeleton'
 
-// Define or import TrainData type
 type TrainData = {
   pnr: string
   trainNumber: string
@@ -14,16 +12,16 @@ type TrainData = {
   // Add other properties expected in TrainData
 }
 
-export default function SelectStation() {
-  // Set trainData to be TrainData | null
+function SelectStationContent() {
   const [trainData, setTrainData] = useState<TrainData | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
-  const searchParams = useSearchParams()
-  const pnr = searchParams.get('pnr')
 
   useEffect(() => {
     const fetchTrainDetails = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pnr = urlParams.get('pnr');
+
       if (!pnr) {
         setError('No PNR provided')
         setLoading(false)
@@ -34,7 +32,7 @@ export default function SelectStation() {
         const response = await fetch(`/api/train-details?pnr=${pnr}`)
         if (response.ok) {
           const data = await response.json()
-          setTrainData({ ...data, pnr }) // Include PNR in the train data
+          setTrainData({ ...data, pnr })
         } else {
           setError('Failed to fetch train details')
         }
@@ -47,40 +45,37 @@ export default function SelectStation() {
     }
 
     fetchTrainDetails()
-  }, [pnr])
+  }, [])
 
+  if (loading) {
+    return <LoadingSkeleton />
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-4">
+          <p className="text-red-500">{error}</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return trainData ? <TrainDetails data={trainData} /> : null
+}
+
+export default function SelectStation() {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-
-    <div className="container mx-auto p-4">
-        {loading ? (
-          <Card>
-            <CardContent className="p-4">
-              <Skeleton className="h-8 w-full mb-4" />
-              <Skeleton className="h-6 w-3/4 mb-2" />
-              <Skeleton className="h-6 w-1/2 mb-2" />
-              <Skeleton className="h-32 w-full" />
-            </CardContent>
-          </Card>
-        ) : error ? (
-          <Card>
-            <CardContent className="p-4">
-              <p className="text-red-500">{error}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          trainData && <TrainDetails data={trainData} /> // Only render TrainDetails if trainData is not null
-        )}
-    </div>
+      <div className="container mx-auto p-4">
+        <SelectStationContent />
+      </div>
     </Suspense>
-
   )
 }
 
 function LoadingSkeleton() {
   return (
-    <Suspense>
-
     <Card>
       <CardContent className="p-4">
         <Skeleton className="h-8 w-full mb-4" />
@@ -89,7 +84,5 @@ function LoadingSkeleton() {
         <Skeleton className="h-32 w-full" />
       </CardContent>
     </Card>
-    </Suspense>
-
   )
 }

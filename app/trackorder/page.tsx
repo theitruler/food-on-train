@@ -1,6 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { getCustomerData, CustomerData, OrderSummary, deleteCustomerData, updateCustomerOrder } from '@/services/database';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -9,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Suspense } from 'react'
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -21,22 +19,20 @@ import {
   AlertDialogTitle 
 } from "@/components/ui/alert-dialog";
 
-export default function TrackOrder() {
+function TrackOrderContent() {
   const [pnr, setPnr] = useState('');
   const [orderDetails, setOrderDetails] = useState<CustomerData | null>(null);
   const [error, setError] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
-    const queryPnr = searchParams.get('pnr');
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryPnr = urlParams.get('pnr');
     if (queryPnr) {
       setPnr(queryPnr);
       handleSearch(queryPnr);
     }
-  }, [searchParams]);
+  }, []);
 
   const handleSearch = async (searchPnr: string) => {
     setError('');
@@ -45,9 +41,7 @@ export default function TrackOrder() {
     try {
       const data = await getCustomerData(searchPnr);
       setOrderDetails(data);
-      const newSearchParams = new URLSearchParams(searchParams.toString());
-      newSearchParams.set('pnr', searchPnr);
-      window.history.pushState(null, '', `${pathname}?${newSearchParams.toString()}`);
+      window.history.pushState(null, '', `${window.location.pathname}?pnr=${searchPnr}`);
     } catch (err) {
       console.error('Error fetching order:', err);
       setError('Order not found');
@@ -63,12 +57,11 @@ export default function TrackOrder() {
     const lowerStatus = status.toLowerCase();
     if (lowerStatus === 'confirmed') return 'bg-green-500 hover:bg-green-600';
     if (lowerStatus === 'pending') return 'bg-yellow-500 hover:bg-yellow-600';
-    return 'bg-gray-500 hover:bg-gray-600'; // Default color for other statuses
+    return 'bg-gray-500 hover:bg-gray-600';
   };
 
   const renderOrderSummary = (summary: OrderSummary) => {
     return (
-      <Suspense>
       <Card className="mt-4">
         <CardHeader>
           <CardTitle>Order Summary</CardTitle>
@@ -106,7 +99,6 @@ export default function TrackOrder() {
           </div>
         </CardContent>
       </Card>
-      </Suspense>
     );
   };
 
@@ -127,7 +119,7 @@ export default function TrackOrder() {
 
     try {
       await deleteCustomerData(orderDetails.pnrNumber);
-      router.push('/order');
+      window.location.href = '/order';
     } catch (error) {
       console.error('Error cancelling order:', error);
       setError('Failed to cancel order. Please try again.');
@@ -141,7 +133,7 @@ export default function TrackOrder() {
       const updatedSummary = parseSummary(orderDetails.orderSummary);
       updatedSummary.orderStatus = 'confirmed';
       await updateCustomerOrder(orderDetails.pnrNumber, updatedSummary);
-      await handleSearch(orderDetails.pnrNumber); // Refresh order details
+      await handleSearch(orderDetails.pnrNumber);
     } catch (error) {
       console.error('Error confirming order:', error);
       setError('Failed to confirm order. Please try again.');
@@ -149,7 +141,6 @@ export default function TrackOrder() {
   };
 
   return (
-    <Suspense>
     <div className="container mx-auto p-4 max-w-3xl">
       <h1 className="text-3xl font-bold mb-6">Track Your Order</h1>
       <form onSubmit={handleSubmit} className="flex gap-2 mb-6">
@@ -225,6 +216,13 @@ export default function TrackOrder() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+export default function TrackOrder() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TrackOrderContent />
     </Suspense>
   );
 }
