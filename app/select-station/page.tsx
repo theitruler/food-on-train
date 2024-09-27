@@ -19,25 +19,24 @@ function SelectStationContent() {
 
   useEffect(() => {
     const fetchTrainDetails = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pnr = urlParams.get('pnr');
-
-      if (!pnr) {
-        setError('No PNR provided')
-        setLoading(false)
-        return
-      }
-
       try {
-        const response = await fetch(`/api/train-details?pnr=${pnr}`)
-        if (response.ok) {
-          const data = await response.json()
-          setTrainData({ ...data, pnr })
-        } else {
-          setError('Failed to fetch train details')
+        // Use a relative URL instead of constructing an absolute URL
+        const pnr = new URLSearchParams(window.location.search).get('pnr')
+
+        if (!pnr) {
+          setError('No PNR provided')
+          setLoading(false)
+          return
         }
+
+        const response = await fetch(`/api/train-details?pnr=${pnr}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setTrainData({ ...data, pnr })
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error fetching train details:', error)
         setError('An error occurred while fetching train details')
       } finally {
         setLoading(false)
