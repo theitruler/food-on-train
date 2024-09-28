@@ -4,12 +4,23 @@ import { Suspense, useEffect, useState } from 'react'
 import TrainDetails from '../../components/train-details'
 import { Card, CardContent } from '../../components/ui/card'
 import { Skeleton } from '../../components/ui/skeleton'
+import { Alert, AlertDescription } from '../../components/ui/alert'
 
 type TrainData = {
   pnr: string
   trainNumber: string
   trainName: string
   // Add other properties expected in TrainData
+}
+
+function OrderNote() {
+  return (
+    <Alert className="mb-4 text-red-500">
+      <AlertDescription>
+        Please order food at least 2 hours before reaching the station. Orders placed later may not be processed.
+      </AlertDescription>
+    </Alert>
+  )
 }
 
 function SelectStationContent() {
@@ -67,6 +78,7 @@ export default function SelectStation() {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
       <div className="container mx-auto p-4">
+        <OrderNote />
         <SelectStationContent />
       </div>
     </Suspense>
