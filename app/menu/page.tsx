@@ -278,9 +278,6 @@ const MenuContent = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {menuItems.map((item) => (
           <Card key={item.$id} className="flex flex-col">
-            <CardHeader className="p-3">
-              <CardTitle className="text-base">{item.foodname}</CardTitle>
-            </CardHeader>
             <CardContent className="flex-grow flex flex-col justify-between p-3">
               <div className="relative w-full h-32 mb-2">
                 <Image 
@@ -292,6 +289,7 @@ const MenuContent = () => {
                 />
               </div>
               <div>
+                <p className="font-semibold mb-1">{item.foodname}</p>
                 <p className="font-bold mb-1">Price: ₹{item.price}</p>
                 <div className="flex items-center justify-between">
                   <Button 
