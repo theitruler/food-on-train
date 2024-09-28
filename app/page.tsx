@@ -1,25 +1,10 @@
 "use client"
 import React, { useState } from "react";
-import { Menu, X, Train, Utensils, MapPin } from "lucide-react";
+import { Train, Utensils, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-interface NavItemProps {
-  href: string;
-  children: React.ReactNode;
-}
-
-const NavItem: React.FC<NavItemProps> = ({ href, children }) => (
-  <a
-    href={href}
-    className="text-gray-200 hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out"
-  >
-    {children}
-  </a>
-);
-
 const LandingPage: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [pnr, setPnr] = useState("");
   const router = useRouter();
 
@@ -30,7 +15,6 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-
       <main>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <section
@@ -190,8 +174,6 @@ const LandingPage: React.FC = () => {
           </section>
         </div>
       </main>
-
-      
     </div>
   );
 };
