@@ -5,13 +5,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --radius: 0.5rem;
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html.light {
+  color-scheme: light;
 }
 
 body {
@@ -20,14 +19,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Override dark mode preferences */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
-@layer base {
-  :root {
-    --radius: 0.5rem;
-  }
+/* Ensure light theme is applied */
+.bg-white {
+  background-color: white !important;
+}
+
+.text-black {
+  color: black !important;
 }
