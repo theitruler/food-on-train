@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { getMenuItems, MenuItem, getCustomerData, CustomerData, updateCustomerOrder, OrderItem, OrderSummary } from '../../services/database'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
-import Image from 'next/image'
 import { X, Loader2 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { Suspense } from 'react'
+import MenuCard from '../../components/menu-card'
 
 interface MenuItemWithQuantity extends MenuItem {
   quantity: number;
@@ -29,7 +29,6 @@ const CartPanel = ({
   selectedItems: MenuItemWithQuantity[]; 
   totalAmount: number;
   totalItems: number;
-  onUpdateOrder: () => void;
   onConfirmOrder: () => Promise<void>;
 }) => {
   const [isConfirming, setIsConfirming] = useState(false);
@@ -277,39 +276,12 @@ const MenuContent = () => {
       <h1 className="text-2xl font-bold mb-4">Menu</h1>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {menuItems.map((item) => (
-          <Card key={item.$id} className="flex flex-col">
-            <CardContent className="flex-grow flex flex-col justify-between p-3">
-              <div className="relative w-full h-32 mb-2">
-                <Image 
-                  src={item.imageurl}
-                  alt={item.foodname}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-md"
-                />
-              </div>
-              <div>
-                <p className="font-semibold mb-1">{item.foodname}</p>
-                <p className="font-bold mb-1">Price: ₹{item.price}</p>
-                <div className="flex items-center justify-between">
-                  <Button 
-                    onClick={() => handleDecrement(item.$id)} 
-                    disabled={item.quantity === 0}
-                    className="px-2 py-1 text-sm"
-                  >
-                    -
-                  </Button>
-                  <span className="mx-1 text-base font-semibold">{item.quantity}</span>
-                  <Button 
-                    onClick={() => handleIncrement(item.$id)}
-                    className="px-2 py-1 text-sm"
-                  >
-                    +
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <MenuCard
+            key={item.$id}
+            item={item}
+            onIncrement={() => handleIncrement(item.$id)}
+            onDecrement={() => handleDecrement(item.$id)}
+          />
         ))}
       </div>
       {totalItems > 0 && (
@@ -335,7 +307,6 @@ const MenuContent = () => {
         selectedItems={selectedItems}
         totalAmount={totalAmount}
         totalItems={totalItems}
-        onUpdateOrder={handleUpdateOrder}
         onConfirmOrder={handleConfirmOrder}
       />
     </div>
