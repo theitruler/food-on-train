@@ -19,7 +19,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ item, onIncrement, onDecrement }) =
             src={item.imageurl}
             alt={item.foodname}
             layout="fill"
-            objectFit="cover"
+            objectFit="contain"
             className="rounded-md"
           />
         </div>

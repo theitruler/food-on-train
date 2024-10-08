@@ -64,7 +64,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div className="mt-20 flex justify-center">
               <Image
-                src="https://cloud.appwrite.io/v1/storage/buckets/66f442aa0039a152902f/files/66f6901300131343e201/view?project=66f1d50d003129532883&project=66f1d50d003129532883&mode=admin"
+                src="https://cloud.appwrite.io/v1/storage/buckets/66f442aa0039a152902f/files/6705026a0022ccd86099/view?project=66f1d50d003129532883&project=66f1d50d003129532883"
                 alt="RailBites"
                 width={800}
                 height={500}

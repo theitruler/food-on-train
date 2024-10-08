@@ -3,14 +3,16 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface NavItemProps {
   href: string;
   children: React.ReactNode;
+  onClick: () => void;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ href, children }) => (
-  <Link href={href}>
+const NavItem: React.FC<NavItemProps> = ({ href, children, onClick }) => (
+  <Link href={href} onClick={onClick}>
     <span className="text-gray-200 hover:bg-indigo-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out">
       {children}
     </span>
@@ -19,6 +21,16 @@ const NavItem: React.FC<NavItemProps> = ({ href, children }) => (
 
 const Navigation: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
+  const handleNavigation = (href: string) => {
+    closeMenu();
+    router.push(href);
+  };
 
   return (
     <nav className="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg">
@@ -26,7 +38,7 @@ const Navigation: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link href="/">
+              <Link href="/" onClick={closeMenu}>
                 <span className="text-white text-xl font-bold">
                   RailBites
                 </span>
@@ -34,11 +46,11 @@ const Navigation: React.FC = () => {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <NavItem href="/">Home</NavItem>
-                <NavItem href="/order">Orders</NavItem>
-                <NavItem href="/#how-it-works">How It Works</NavItem>
-                <NavItem href="/trackorder">Track Orders</NavItem>
-                <NavItem href="/#about">About Us</NavItem>
+                <NavItem href="/" onClick={() => handleNavigation('/')}>Home</NavItem>
+                <NavItem href="/order" onClick={() => handleNavigation('/order')}>Orders</NavItem>
+                <NavItem href="/#how-it-works" onClick={() => handleNavigation('/#how-it-works')}>How It Works</NavItem>
+                <NavItem href="/trackorder" onClick={() => handleNavigation('/trackorder')}>Track Orders</NavItem>
+                <NavItem href="/#about" onClick={() => handleNavigation('/#about')}>About Us</NavItem>
               </div>
             </div>
           </div>
@@ -64,11 +76,11 @@ const Navigation: React.FC = () => {
       {isOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <NavItem href="/">Home</NavItem>
-            <NavItem href="/order">Orders</NavItem>
-            <NavItem href="/#how-it-works">How It Works</NavItem>
-            <NavItem href="/trackorder">Track Orders</NavItem>
-            <NavItem href="/#about">About Us</NavItem>
+            <NavItem href="/" onClick={() => handleNavigation('/')}>Home</NavItem>
+            <NavItem href="/order" onClick={() => handleNavigation('/order')}>Orders</NavItem>
+            <NavItem href="/#how-it-works" onClick={() => handleNavigation('/#how-it-works')}>How It Works</NavItem>
+            <NavItem href="/trackorder" onClick={() => handleNavigation('/trackorder')}>Track Orders</NavItem>
+            <NavItem href="/#about" onClick={() => handleNavigation('/#about')}>About Us</NavItem>
           </div>
         </div>
       )}
