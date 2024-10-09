@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import { Train, Utensils, MapPin } from "lucide-react";
+import { Train, Utensils, MapPin, Gift } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -15,6 +15,18 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      <style jsx global>{`
+        @keyframes shake {
+          0% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          50% { transform: translateX(5px); }
+          75% { transform: translateX(-5px); }
+          100% { transform: translateX(0); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out infinite;
+        }
+      `}</style>
       <main>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <section
@@ -30,6 +42,23 @@ const LandingPage: React.FC = () => {
                 Experience gourmet dining while you travel. Order fresh, tasty
                 food directly to your train seat.
               </p>
+              
+              {/* Animated Offer Section */}
+              <div className="mt-8 bg-yellow-100 border-2 border-yellow-400 rounded-lg p-4 max-w-2xl mx-auto animate-shake">
+                <h2 className="text-2xl font-bold text-yellow-800 mb-2 flex items-center justify-center">
+                  <Gift className="mr-2 animate-bounce" /> Limited Time Offer!
+                </h2>
+                <p className="text-lg text-yellow-800">
+                  🍽️ Order Food Worth ₹500+ and get 2 250ml FREE Cokes! 🥤🥤
+                </p>
+                <p className="text-lg text-yellow-800 mt-2">
+                  🍗 And for ₹1500+ get FREE Chicken Biryani! 🍛
+                </p>
+                <p className="text-sm text-yellow-700 mt-2">
+                  Don&apos;t miss this flavor-packed deal! Order now and make your journey deliciously rewarding.
+                </p>
+              </div>
+              
               <div className="mt-10 max-w-3xl mx-auto">
                 <form
                   onSubmit={handleSubmit}
